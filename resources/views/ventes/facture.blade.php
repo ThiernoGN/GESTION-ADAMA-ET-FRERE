@@ -207,9 +207,9 @@
         <tr>
             <th>Produit</th>
             <th>Référence</th>
-            <th style="text-align:center;">Qté</th>
-            <th style="text-align:right;">Prix unit.</th>
-            <th style="text-align:right;">Sous-total</th>
+            <th style="text-align:center;">Qté en Carton</th>
+            <th style="text-align:right;">P.U</th>
+            <th style="text-align:right;">Sous-Total</th>
         </tr>
     </thead>
     <tbody>
@@ -217,7 +217,7 @@
         <tr>
             <td>
                 <strong>{{ $ligne->produit->nom }}</strong><br>
-                <span style="color:#78716c; font-size:11px;">{{ $ligne->produit->Contenance}}</span>
+                <span style="color:#78716c; font-size:11px;">{{ $ligne->produit->contenance }}</span>
             </td>
             <td style="color:#78716c;">{{ $ligne->produit->reference }}</td>
             <td style="text-align:center;">{{ $ligne->quantite }}</td>
@@ -227,20 +227,52 @@
         @endforeach
     </tbody>
     <tfoot>
+
+        {{-- Sous-total HT --}}
         <tr>
             <td colspan="4" style="text-align:right; color:#78716c;">Sous-total HT</td>
             <td style="text-align:right;">{{ number_format($vente->total_ht, 0, ',', ' ') }} GNF</td>
         </tr>
+
+        {{-- Remise si applicable --}}
         @if($vente->remise > 0)
         <tr>
             <td colspan="4" style="text-align:right; color:#16a34a;">Remise accordée</td>
             <td style="text-align:right; color:#16a34a;">- {{ number_format($vente->remise, 0, ',', ' ') }} GNF</td>
         </tr>
         @endif
+
+        {{-- Total TTC --}}
         <tr class="total-row">
             <td colspan="4" style="text-align:right;">TOTAL TTC</td>
             <td style="text-align:right; color:#92400e;">{{ number_format($vente->total_ttc, 0, ',', ' ') }} GNF</td>
         </tr>
+
+        {{-- Montant payé --}}
+        <tr>
+            <td colspan="4" style="text-align:right; color:#1d4ed8; font-weight:600;">Montant Payé</td>
+            <td style="text-align:right; color:#1d4ed8; font-weight:600;">
+                {{ number_format($vente->montant_paye ?? 0, 0, ',', ' ') }} GNF
+            </td>
+        </tr>
+
+        {{-- Reste à payer : rouge si > 0, vert si = 0 --}}
+        @php
+            $reste = $vente->reste_a_payer ?? ($vente->total_ttc - ($vente->montant_paye ?? 0));
+            $reste = max(0, $reste);
+        @endphp
+        <tr>
+            <td colspan="4" style="text-align:right; font-weight:700;
+                color: {{ $reste > 0 ? '#dc2626' : '#16a34a' }};">
+                Reste à Payer
+            </td>
+            <td style="text-align:right; font-weight:700; font-size:13px;
+                color: {{ $reste > 0 ? '#dc2626' : '#16a34a' }};
+                background: {{ $reste > 0 ? '#fee2e2' : '#dcfce7' }};">
+                {{ number_format($reste, 0, ',', ' ') }} GNF
+            </td>
+        </tr>
+
     </tfoot>
 </table>
 

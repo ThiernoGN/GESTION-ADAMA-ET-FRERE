@@ -117,7 +117,7 @@
                 <tr>
                     <td class="px-4 py-3">
                         <p class="font-medium text-stone-800">{{ $ligne->produit->nom }}</p>
-                        <p class="text-xs text-stone-400">{{ $ligne->produit->marque->nom }} — {{ $ligne->produit->reference }}</p>
+                        <p class="text-xs text-stone-400">{{ $ligne->produit->reference }}</p>
                     </td>
                     <td class="px-4 py-3 text-center text-stone-700">{{ $ligne->quantite }}</td>
                     <td class="px-4 py-3 text-right text-stone-700">{{ number_format($ligne->prix_unitaire, 0, ',', ' ') }} GNF</td>

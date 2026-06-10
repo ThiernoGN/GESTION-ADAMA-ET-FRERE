@@ -15,6 +15,8 @@ class Vente extends Model
         'user_id',
         'total_ht',
         'remise',
+         'montant_paye',   // ← ajouter
+        'reste_a_payer',  // ← ajouter
         'total_ttc',
         'mode_paiement',
         'statut',

@@ -58,76 +58,88 @@ class VenteController extends Controller
         return view('ventes.create', compact('produits', 'clients'));
     }
 
-    // ─── Enregistrer la vente ─────────────────────────────────
-    public function store(Request $request)
-    {
-        $request->validate([
-            'lignes'                  => 'required|array|min:1',
-            'lignes.*.produit_id'     => 'required|exists:produits,id',
-            'lignes.*.quantite'       => 'required|integer|min:1',
-            'mode_paiement'           => 'required|in:especes,carte,mobile_money,credit',
-            'remise'                  => 'nullable|numeric|min:0',
-            'client_id'               => 'nullable|exists:clients,id',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'lignes'                  => 'required|array|min:1',
+        'lignes.*.produit_id'     => 'required|exists:produits,id',
+        'lignes.*.quantite'       => 'required|integer|min:1',
+        'mode_paiement'           => 'required|in:especes,carte,mobile_money,credit',
+        'remise'                  => 'nullable|numeric|min:0',
+        'client_id'               => 'nullable|exists:clients,id',
+        'montant_paye'            => 'nullable|numeric|min:0',
+    ]);
 
-        $total_ht = 0;
-        $lignes   = [];
+    $total_ht = 0;
+    $lignes   = [];
 
-        // Vérifier stock et calculer totaux
-        foreach ($request->lignes as $ligne) {
-            $produit = Produit::findOrFail($ligne['produit_id']);
+    foreach ($request->lignes as $ligne) {
+        $produit = Produit::findOrFail($ligne['produit_id']);
 
-            if ($produit->stock_actuel < $ligne['quantite']) {
-                return back()
-                    ->withInput()
-                    ->withErrors(["Stock insuffisant pour « {$produit->nom} ». Stock disponible : {$produit->stock_actuel}"]);
-            }
-
-            $sous_total = $produit->prix_vente * $ligne['quantite'];
-            $total_ht  += $sous_total;
-
-            $lignes[] = [
-                'produit_id'    => $produit->id,
-                'quantite'      => $ligne['quantite'],
-                'prix_unitaire' => $produit->prix_vente,
-                'sous_total'    => $sous_total,
-            ];
+        if ($produit->stock_actuel < $ligne['quantite']) {
+            return back()->withInput()
+                         ->withErrors(["Stock insuffisant pour « {$produit->nom} »."]);
         }
 
-        $remise    = $request->remise ?? 0;
-        $total_ttc = $total_ht - $remise;
+        $sous_total = $produit->prix_vente * $ligne['quantite'];
+        $total_ht  += $sous_total;
 
-        // Créer la vente
-        $vente = Vente::create([
-            'numero'        => Vente::genererNumero(),
-            'client_id'     => $request->client_id,
-            'user_id'       => auth()->id(),
-            'total_ht'      => $total_ht,
-            'remise'        => $remise,
-            'total_ttc'     => $total_ttc,
-            'mode_paiement' => $request->mode_paiement,
-            'statut'        => 'payee',
-        ]);
-
-        // Créer les lignes et décrémenter le stock
-        foreach ($lignes as $ligne) {
-            $vente->lignes()->create($ligne);
-            Produit::find($ligne['produit_id'])
-                   ->decrement('stock_actuel', $ligne['quantite']);
-        }
-
-        // Points fidélité (1 point par 1000 GNF)
-        if ($vente->client_id) {
-            $points = intdiv((int) $total_ttc, 1000);
-            if ($points > 0) {
-                $vente->client->increment('points_fidelite', $points);
-            }
-        }
-
-        return redirect()
-            ->route('ventes.show', $vente)
-            ->with('success', "Vente {$vente->numero} enregistrée avec succès !");
+        $lignes[] = [
+            'produit_id'    => $produit->id,
+            'quantite'      => $ligne['quantite'],
+            'prix_unitaire' => $produit->prix_vente,
+            'sous_total'    => $sous_total,
+        ];
     }
+
+    $remise       = $request->remise ?? 0;
+    $total_ttc    = $total_ht - $remise;
+    $montant_paye = $request->montant_paye ?? 0;
+
+    // ─── Reste à payer = Total TTC - Montant payé ────────
+    // Si montant_paye >= total_ttc → reste = 0
+    // Si montant_paye < total_ttc  → reste = différence
+    $reste_a_payer = max(0, $total_ttc - $montant_paye);
+
+    // ─── Statut selon paiement ────────────────────────────
+    // Paiement complet → payee
+    // Paiement partiel ou aucun → en_cours
+    $statut = $reste_a_payer > 0 ? 'en_cours' : 'payee';
+
+    $vente = Vente::create([
+        'numero'        => Vente::genererNumero(),
+        'client_id'     => $request->client_id,
+        'user_id'       => auth()->id(),
+        'total_ht'      => $total_ht,
+        'remise'        => $remise,
+        'total_ttc'     => $total_ttc,
+        'montant_paye'  => $montant_paye,
+        'reste_a_payer' => $reste_a_payer,
+        'mode_paiement' => $request->mode_paiement,
+        'statut'        => $statut,
+    ]);
+
+    foreach ($lignes as $ligne) {
+        $vente->lignes()->create($ligne);
+        Produit::find($ligne['produit_id'])
+               ->decrement('stock_actuel', $ligne['quantite']);
+    }
+
+    // Points fidélité uniquement si paiement complet
+    if ($vente->client_id && $statut === 'payee') {
+        $points = intdiv((int) $total_ttc, 1000);
+        if ($points > 0) {
+            $vente->client->increment('points_fidelite', $points);
+        }
+    }
+
+    return redirect()
+        ->route('ventes.show', $vente)
+        ->with('success', $statut === 'payee'
+            ? "Vente {$vente->numero} enregistrée et payée !"
+            : "Vente {$vente->numero} enregistrée — Reste à payer : " . number_format($reste_a_payer, 0, ',', ' ') . " GNF"
+        );
+}
 
     // ─── Détail d'une vente ───────────────────────────────────
     public function show(Vente $vente)
