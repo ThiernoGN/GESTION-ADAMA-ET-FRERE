@@ -62,22 +62,13 @@
                 @endforeach
             </select>
 
-            <select name="marque_id"
-                    class="border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                <option value="">Toutes marques</option>
-                @foreach($marques as $marque)
-                <option value="{{ $marque->id }}" {{ request('marque_id') == $marque->id ? 'selected' : '' }}>
-                    {{ $marque->nom }}
-                </option>
-                @endforeach
-            </select>
-
             <select name="genre"
                     class="border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
                 <option value="">Tous genres</option>
                 <option value="homme" {{ request('genre') === 'homme' ? 'selected' : '' }}>Homme</option>
                 <option value="femme" {{ request('genre') === 'femme' ? 'selected' : '' }}>Femme</option>
                 <option value="mixte" {{ request('genre') === 'mixte' ? 'selected' : '' }}>Mixte</option>
+                <option value="enfant" {{ request('genre') === 'enfant' ? 'selected' : '' }}>Enfant</option>
             </select>
 
             <select name="stock"
@@ -132,7 +123,7 @@
                             @endif
                             <div>
                                 <p class="font-medium text-stone-800">{{ $produit->nom }}</p>
-                                <p class="text-xs text-stone-400">{{ $produit->marque->nom }} — {{ $produit->reference }}</p>
+                                <p class="text-xs text-stone-400">{{ $produit->reference }}</p>
                                 @if($produit->contenance)
                                 <p class="text-xs text-stone-400">{{ $produit->contenance }}</p>
                                 @endif

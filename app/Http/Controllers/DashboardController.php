@@ -31,7 +31,7 @@ class DashboardController extends Controller
             ->groupBy('produits.id', 'produits.nom')
             ->orderByDesc('total_vendu')->limit(5)->get();
 
-        $alertes_stock    = Produit::stockFaible()->with('marque')->get();
+        $alertes_stock    = Produit::stockFaible()->get();
         $dernieres_ventes = Vente::with('client', 'vendeur')->latest()->limit(10)->get();
 
         return view('dashboard', compact(

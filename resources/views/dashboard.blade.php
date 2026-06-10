@@ -85,7 +85,7 @@
                class="flex items-center justify-between py-2 border-b border-stone-100 last:border-0 hover:bg-stone-50 rounded px-1 transition">
                 <div>
                     <p class="text-sm text-stone-700 font-medium">{{ $p->nom }}</p>
-                    <p class="text-xs text-stone-400">{{ $p->marque->nom }}</p>
+                    
                 </div>
                 <span class="text-sm font-semibold text-red-600">
                     {{ $p->stock_actuel }} / {{ $p->stock_minimum }} min

@@ -143,11 +143,11 @@
         </div>
 
         <div class="company-desc">
-            📞 +224 621 51 31 91
+            +224 621 51 31 91
         </div>
 
         <div class="company-desc">
-            ✉️ mamadouadama3311@gmail.com
+             mamadouadama3311@gmail.com
         </div>
     </div>
 
@@ -188,7 +188,7 @@
         @if($vente->client->adresse)
         <p style="color:#78716c;">{{ $vente->client->adresse }}</p>
         @endif
-        <p style="color:#d97706; margin-top:4px;">⭐ {{ $vente->client->points_fidelite }} points fidélité</p>
+        <p style="color:#d97706; margin-top:4px;"> {{ $vente->client->points_fidelite }} points fidélité</p>
         @else
         <p style="color:#78716c; font-style:italic;">Client passager</p>
         @endif
@@ -217,7 +217,7 @@
         <tr>
             <td>
                 <strong>{{ $ligne->produit->nom }}</strong><br>
-                <span style="color:#78716c; font-size:11px;">{{ $ligne->produit->marque->nom }}</span>
+                <span style="color:#78716c; font-size:11px;">{{ $ligne->produit->Contenance}}</span>
             </td>
             <td style="color:#78716c;">{{ $ligne->produit->reference }}</td>
             <td style="text-align:center;">{{ $ligne->quantite }}</td>

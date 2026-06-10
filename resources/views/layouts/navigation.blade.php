@@ -37,7 +37,11 @@
                         📊 {{ __('Rapports') }}
                     </x-nav-link>
                     @endif
-
+                @if(auth()->user()->isAdmin())
+                    <x-nav-link :href="route('parametres.index')" :active="request()->routeIs('parametres.*')">
+                        ⚙️ {{ __('Paramètres') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -83,9 +87,14 @@
                         <x-dropdown-link :href="route('clients.index')">👥 Clients</x-dropdown-link>
                         <x-dropdown-link :href="route('fournisseurs.index')">🚚 Fournisseurs</x-dropdown-link>
                         <x-dropdown-link :href="route('produits.index')">🌸 Produits</x-dropdown-link>
+                        @if(auth()->user()->isAdmin())
+                        <x-nav-link :href="route('parametres.index')" :active="request()->routeIs('parametres.*')">
+                            ⚙️ {{ __('Paramètres') }}
+                        </x-nav-link>
+                        @endif
 
                         @if(auth()->user()->isAdmin())
-                        <x-dropdown-link :href="route('utilisateurs.index')">⚙️ Utilisateurs</x-dropdown-link>
+                        <x-dropdown-link :href="route('parametres.utilisateurs')">⚙️ Utilisateurs</x-dropdown-link>
                         @endif
 
                         <div class="border-t border-gray-100"></div>
@@ -186,8 +195,8 @@
                 📊 {{ __('Rapports') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('utilisateurs.index')"
-                                   :active="request()->routeIs('utilisateurs.*')"
+            <x-responsive-nav-link :href="route('parametres.utilisateurs')"
+                                   :active="request()->routeIs('parametres.utilisateurs.*')"
                                    @click="open = false">
                 ⚙️ {{ __('Utilisateurs') }}
             </x-responsive-nav-link>

@@ -48,18 +48,6 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Marque *</label>
-                        <select name="marque_id" required
-                                class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="">Sélectionner...</option>
-                            @foreach($marques as $marque)
-                            <option value="{{ $marque->id }}" {{ old('marque_id') == $marque->id ? 'selected' : '' }}>
-                                {{ $marque->nom }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
 
                     {{-- ★ NOUVEAU — Fournisseur --}}
                     <div>
@@ -94,6 +82,7 @@
                             <option value="mixte" {{ old('genre') === 'mixte' ? 'selected' : '' }}>💜 Mixte</option>
                             <option value="homme" {{ old('genre') === 'homme' ? 'selected' : '' }}>💙 Homme</option>
                             <option value="femme" {{ old('genre') === 'femme' ? 'selected' : '' }}>💗 Femme</option>
+                            <option value="enfant" {{ old('genre') === 'enfant' ? 'selected' : '' }}>👶 Enfant</option>
                         </select>
                     </div>
 
@@ -105,11 +94,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4">
-                    <label class="block text-sm font-medium text-stone-700 mb-1">Description</label>
-                    <textarea name="description" rows="3"
-                              class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">{{ old('description') }}</textarea>
-                </div>
+
             </div>
 
             {{-- Prix --}}

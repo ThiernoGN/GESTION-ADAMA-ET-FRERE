@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Produit;
 use App\Models\Categorie;
-use App\Models\Marque;
 use App\Models\Fournisseur;
 use App\Models\CommandeFournisseur;
 use Illuminate\Http\Request;
@@ -14,7 +13,7 @@ class ProduitController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Produit::with('categorie', 'marque', 'fournisseur')->latest();
+        $query = Produit::with('categorie', 'fournisseur')->latest();
 
         if ($request->search) {
             $query->where(function ($q) use ($request) {
@@ -24,9 +23,6 @@ class ProduitController extends Controller
         }
         if ($request->categorie_id) {
             $query->where('categorie_id', $request->categorie_id);
-        }
-        if ($request->marque_id) {
-            $query->where('marque_id', $request->marque_id);
         }
         if ($request->genre) {
             $query->where('genre', $request->genre);
@@ -40,17 +36,15 @@ class ProduitController extends Controller
 
         $produits    = $query->paginate(20)->withQueryString();
         $categories  = Categorie::orderBy('nom')->get();
-        $marques     = Marque::orderBy('nom')->get();
 
-        return view('produits.index', compact('produits', 'categories', 'marques'));
+        return view('produits.index', compact('produits', 'categories'));
     }
 
     public function create()
     {
         $categories   = Categorie::orderBy('nom')->get();
-        $marques      = Marque::orderBy('nom')->get();
         $fournisseurs = Fournisseur::orderBy('nom')->get();
-        return view('produits.create', compact('categories', 'marques', 'fournisseurs'));
+        return view('produits.create', compact('categories', 'fournisseurs'));
     }
 
     public function store(Request $request)
@@ -59,7 +53,6 @@ class ProduitController extends Controller
             'nom'            => 'required|string|max:255',
             'reference'      => 'required|string|unique:produits,reference',
             'categorie_id'   => 'required|exists:categories,id',
-            'marque_id'      => 'required|exists:marques,id',
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
             'prix_achat'     => 'required|numeric|min:0',
             'prix_vente'     => 'required|numeric|min:0',
@@ -106,16 +99,15 @@ class ProduitController extends Controller
 
     public function show(Produit $produit)
     {
-        $produit->load('categorie', 'marque', 'fournisseur', 'venteLignes.vente');
+        $produit->load('categorie', 'fournisseur', 'venteLignes.vente');
         return view('produits.show', compact('produit'));
     }
 
     public function edit(Produit $produit)
     {
         $categories   = Categorie::orderBy('nom')->get();
-        $marques      = Marque::orderBy('nom')->get();
         $fournisseurs = Fournisseur::orderBy('nom')->get();
-        return view('produits.edit', compact('produit', 'categories', 'marques', 'fournisseurs'));
+        return view('produits.edit', compact('produit', 'categories', 'fournisseurs'));
     }
 
     public function update(Request $request, Produit $produit)
@@ -124,7 +116,6 @@ class ProduitController extends Controller
             'nom'            => 'required|string|max:255',
             'reference'      => 'required|string|unique:produits,reference,' . $produit->id,
             'categorie_id'   => 'required|exists:categories,id',
-            'marque_id'      => 'required|exists:marques,id',
             'fournisseur_id' => 'nullable|exists:fournisseurs,id',
             'prix_achat'     => 'required|numeric|min:0',
             'prix_vente'     => 'required|numeric|min:0',

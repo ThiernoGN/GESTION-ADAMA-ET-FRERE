@@ -17,14 +17,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // --- MARQUES ---
-        Schema::create('marques', function (Blueprint $table) {
-            $table->id();
-            $table->string('nom');
-            $table->string('pays_origine')->nullable();
-            $table->string('logo')->nullable();
-            $table->timestamps();
-        });
 
         // --- PRODUITS ---
         Schema::create('produits', function (Blueprint $table) {
@@ -76,7 +68,7 @@ return new class extends Migration
             $table->decimal('total_ht', 10, 2);
             $table->decimal('remise', 10, 2)->default(0);
             $table->decimal('total_ttc', 10, 2);
-            $table->enum('mode_paiement', ['especes', 'carte', 'mobile_money', 'credit'])->default('especes');
+            $table->enum('mode_paiement', ['especes',  'mobile_money'])->default('especes');
             $table->enum('statut', ['en_cours', 'payee', 'annulee'])->default('payee');
             $table->timestamps();
         });

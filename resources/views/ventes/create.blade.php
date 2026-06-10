@@ -45,7 +45,7 @@
                             <div>
                                 <p class="text-sm font-medium text-stone-800">{{ $produit->nom }}</p>
                                 <p class="text-xs text-stone-400">
-                                    {{ $produit->marque->nom }} — {{ $produit->reference }} — {{ $produit->contenance }}
+                                     {{ $produit->reference }} — {{ $produit->contenance }}
                                 </p>
                             </div>
                             <div class="text-right">

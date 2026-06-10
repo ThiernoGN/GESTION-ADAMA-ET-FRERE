@@ -53,7 +53,7 @@ class VenteController extends Controller
     // ─── Formulaire nouvelle vente (Point de vente) ───────────
     public function create()
     {
-        $produits = Produit::actif()->with('marque', 'categorie')->orderBy('nom')->get();
+        $produits = Produit::actif()->with('categorie')->orderBy('nom')->get();
         $clients  = Client::orderBy('nom')->get();
         return view('ventes.create', compact('produits', 'clients'));
     }
@@ -132,7 +132,7 @@ class VenteController extends Controller
     // ─── Détail d'une vente ───────────────────────────────────
     public function show(Vente $vente)
     {
-        $vente->load('client', 'vendeur', 'lignes.produit.marque');
+        $vente->load('client', 'vendeur');
         return view('ventes.show', compact('vente'));
     }
 
@@ -145,7 +145,7 @@ class VenteController extends Controller
         }
 
         $vente->load('lignes.produit');
-        $produits = Produit::actif()->with('marque')->orderBy('nom')->get();
+        $produits = Produit::actif()->orderBy('nom')->get();
         $clients  = Client::orderBy('nom')->get();
 
         return view('ventes.edit', compact('vente', 'produits', 'clients'));
@@ -240,7 +240,7 @@ class VenteController extends Controller
     // ─── Générer la facture PDF ───────────────────────────────
     public function facture(Vente $vente)
     {
-        $vente->load('client', 'vendeur', 'lignes.produit.marque');
+        $vente->load('client', 'vendeur');
         $pdf = Pdf::loadView('ventes.facture', compact('vente'))
                   ->setPaper('a4', 'portrait');
         return $pdf->stream("facture-{$vente->numero}.pdf");
