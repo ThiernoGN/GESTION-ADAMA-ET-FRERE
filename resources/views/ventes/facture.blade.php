@@ -188,7 +188,6 @@
         @if($vente->client->adresse)
         <p style="color:#78716c;">{{ $vente->client->adresse }}</p>
         @endif
-        <p style="color:#d97706; margin-top:4px;"> {{ $vente->client->points_fidelite }} points fidélité</p>
         @else
         <p style="color:#78716c; font-style:italic;">Client passager</p>
         @endif

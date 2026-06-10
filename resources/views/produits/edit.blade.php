@@ -55,19 +55,6 @@
                         </select>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-stone-700 mb-1">Marque *</label>
-                        <select name="marque_id" required
-                                class="w-full border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            <option value="">Sélectionner...</option>
-                            @foreach($marques as $marque)
-                            <option value="{{ $marque->id }}"
-                                {{ old('marque_id', $produit->marque_id) == $marque->id ? 'selected' : '' }}>
-                                {{ $marque->nom }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
 
                     <div>
                         <label class="block text-sm font-medium text-stone-700 mb-1">Genre *</label>
