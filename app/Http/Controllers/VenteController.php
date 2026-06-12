@@ -163,6 +163,45 @@ public function store(Request $request)
         return view('ventes.edit', compact('vente', 'produits', 'clients'));
     }
 
+    // ─── Solde d'une vente (2ème paiement) ───────────────
+public function solde(Request $request, Vente $vente)
+{
+    $request->validate([
+        'montant_paye_2' => 'required|numeric|min:1',
+    ]);
+
+    if ($vente->reste_a_payer <= 0) {
+        return back()->withErrors('Cette vente est déjà soldée.');
+    }
+
+    $montant_2     = $request->montant_paye_2;
+    $nouveau_reste = max(0, $vente->reste_a_payer - $montant_2);
+    $statut        = $nouveau_reste <= 0 ? 'payee' : 'en_cours';
+
+    $vente->update([
+        'montant_paye_2'  => $montant_2,
+        'date_paiement_1' => $vente->date_paiement_1 ?? $vente->created_at,
+        'date_paiement_2' => now(),
+        'reste_a_payer'   => $nouveau_reste,
+        'statut'          => $statut,
+    ]);
+
+    // Points fidélité si soldé
+    if ($statut === 'payee' && $vente->client_id) {
+        $points = intdiv((int) $vente->total_ttc, 1000);
+        if ($points > 0) {
+            $vente->client->increment('points_fidelite', $points);
+        }
+    }
+
+    return redirect()
+        ->route('ventes.show', $vente)
+        ->with('success', $statut === 'payee'
+            ? "Vente {$vente->numero} soldée ! ✅"
+            : "Paiement enregistré. Reste : " . number_format($nouveau_reste, 0, ',', ' ') . " GNF"
+        );
+}
+
     // ─── Mettre à jour ────────────────────────────────────────
     public function update(Request $request, Vente $vente)
     {

@@ -10,6 +10,7 @@ use App\Http\Controllers\RapportController;
 use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\CategorieController;
 use App\Http\Controllers\ParametreController; // ← AJOUTER CETTE LIGNE
+use App\Http\Controllers\FichierClientController; // ← AJOUTER CETTE LIGNE
 
 
 
@@ -36,7 +37,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('ventes', VenteController::class);
     Route::get('ventes/{vente}/facture',   [VenteController::class, 'facture'])->name('ventes.facture');
     Route::post('ventes/{vente}/annuler',  [VenteController::class, 'annuler'])->name('ventes.annuler');
-
+    // Fichier Clients
+    Route::get('fichier-client',         [FichierClientController::class, 'index'])->name('fichier-client.index');
+    Route::get('fichier-client/{client}',[FichierClientController::class, 'show'])->name('fichier-client.show');
     // Fournisseurs
     Route::resource('fournisseurs', FournisseurController::class);
     Route::post('fournisseurs/{fournisseur}/commande',

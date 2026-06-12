@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Categorie;
-use App\Models\Marque;
 use App\Models\Produit;
 use App\Models\Client;
 use App\Models\Fournisseur;
@@ -52,23 +51,12 @@ class DatabaseSeeder extends Seeder
             Categorie::firstOrCreate(['slug' => $cat['slug']], $cat);
         }
 
-        // --- MARQUES ---
-        $marques = [
-            ['nom' => 'Chanel',  'pays_origine' => 'France'],
-            ['nom' => 'Dior',    'pays_origine' => 'France'],
-            ['nom' => 'Versace', 'pays_origine' => 'Italie'],
-            ['nom' => 'Armani',  'pays_origine' => 'Italie'],
-            ['nom' => 'Lacoste', 'pays_origine' => 'France'],
-        ];
-        foreach ($marques as $marque) {
-            Marque::firstOrCreate(['nom' => $marque['nom']], $marque);
-        }
+
 
         // --- PRODUITS ---
         $produits = [
             [
                 'categorie_id'  => 1,
-                'marque_id'     => 1,
                 'nom'           => 'Chanel N°5',
                 'reference'     => 'CHN-001',
                 'description'   => 'Le parfum mythique de Chanel',
@@ -81,7 +69,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'categorie_id'  => 1,
-                'marque_id'     => 2,
                 'nom'           => 'Dior Sauvage',
                 'reference'     => 'DIO-001',
                 'description'   => 'Parfum masculin emblématique',
@@ -94,7 +81,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'categorie_id'  => 2,
-                'marque_id'     => 3,
                 'nom'           => 'Versace Eros',
                 'reference'     => 'VER-001',
                 'description'   => 'Eau de toilette homme',
@@ -107,7 +93,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'categorie_id'  => 3,
-                'marque_id'     => 4,
                 'nom'           => 'Armani Code',
                 'reference'     => 'ARM-001',
                 'description'   => 'Parfum oud oriental',
@@ -120,7 +105,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'categorie_id'  => 2,
-                'marque_id'     => 5,
                 'nom'           => 'Lacoste Essential',
                 'reference'     => 'LAC-001',
                 'description'   => 'Fraîcheur et légèreté',

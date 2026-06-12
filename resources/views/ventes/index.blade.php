@@ -62,7 +62,7 @@
     <div class="bg-white border border-stone-200 rounded-xl overflow-hidden">
         <table class="w-full text-sm">
             <thead>
-                <tr class="bg-stone-500 border-b border-stone-200 ">
+                <tr class=" border-b border-stone-200 ">
                     <th class="text-left px-4 py-3 text-xs font-medium text-stone-500 uppercase tracking-wide">N° Vente</th>
                     <th class="text-left px-4 py-3 text-xs font-medium text-stone-500 uppercase tracking-wide">Client</th>
                     <th class="text-left px-4 py-3 text-xs font-medium text-stone-500 uppercase tracking-wide">Vendeur</th>

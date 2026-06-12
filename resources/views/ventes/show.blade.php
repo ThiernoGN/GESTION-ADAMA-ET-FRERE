@@ -143,6 +143,84 @@
             </tfoot>
         </table>
     </div>
+    {{-- Bloc paiement & solde --}}
+<div class="bg-white border border-stone-200 rounded-xl p-5">
+    <h3 class="font-medium text-stone-800 mb-4">💰 Paiements</h3>
 
+    <dl class="space-y-3 text-sm">
+
+        {{-- 1er paiement --}}
+        <div class="flex justify-between items-center py-2 border-b border-stone-100">
+            <dt class="text-stone-500">
+                1er paiement
+                <span class="text-xs text-stone-400 block">
+                    {{ $vente->date_paiement_1
+                        ? $vente->date_paiement_1->format('d/m/Y H:i')
+                        : $vente->created_at->format('d/m/Y H:i') }}
+                </span>
+            </dt>
+            <dd class="font-semibold text-green-600">
+                {{ number_format($vente->montant_paye ?? 0, 0, ',', ' ') }} GNF
+            </dd>
+        </div>
+
+        {{-- 2ème paiement si existe --}}
+        @if($vente->montant_paye_2 > 0)
+        <div class="flex justify-between items-center py-2 border-b border-stone-100">
+            <dt class="text-stone-500">
+                2ème paiement
+                <span class="text-xs text-stone-400 block">
+                    {{ $vente->date_paiement_2?->format('d/m/Y H:i') ?? '—' }}
+                </span>
+            </dt>
+            <dd class="font-semibold text-green-600">
+                {{ number_format($vente->montant_paye_2, 0, ',', ' ') }} GNF
+            </dd>
+        </div>
+        @endif
+
+        {{-- Total payé --}}
+        <div class="flex justify-between items-center py-2 border-b border-stone-100">
+            <dt class="font-medium text-stone-700">Total payé</dt>
+            <dd class="font-bold text-green-600">
+                {{ number_format(($vente->montant_paye ?? 0) + ($vente->montant_paye_2 ?? 0), 0, ',', ' ') }} GNF
+            </dd>
+        </div>
+
+        {{-- Reste à payer --}}
+        <div class="flex justify-between items-center py-2">
+            <dt class="font-medium {{ $vente->reste_a_payer > 0 ? 'text-red-700' : 'text-green-700' }}">
+                Reste à payer
+            </dt>
+            <dd class="font-bold text-lg {{ $vente->reste_a_payer > 0 ? 'text-red-600' : 'text-green-600' }}">
+                {{ $vente->reste_a_payer > 0
+                    ? number_format($vente->reste_a_payer, 0, ',', ' ') . ' GNF'
+                    : '✅ Soldé' }}
+            </dd>
+        </div>
+
+    </dl>
+
+    {{-- Formulaire solde --}}
+    @if($vente->reste_a_payer > 0 && $vente->statut !== 'annulee' && !$vente->montant_paye_2)
+    <div class="mt-4 pt-4 border-t border-stone-100">
+        <p class="text-xs text-stone-500 mb-3">💳 Enregistrer un 2ème paiement</p>
+        <form method="POST" action="{{ route('ventes.solde', $vente) }}"
+              class="flex gap-2 items-center">
+            @csrf
+            <input type="number" name="montant_paye_2"
+                   min="1" max="{{ $vente->reste_a_payer }}"
+                   placeholder="Montant (max {{ number_format($vente->reste_a_payer, 0, ',', ' ') }} GNF)"
+                   required
+                   class="flex-1 border border-stone-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition whitespace-nowrap">
+                ✅ Encaisser
+            </button>
+        </form>
+    </div>
+    @endif
+
+</div>
 </div>
 @endsection

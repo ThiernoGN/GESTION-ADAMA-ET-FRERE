@@ -23,6 +23,7 @@
                     <x-nav-link :href="route('produits.index')" :active="request()->routeIs('produits.*')">
                         🌸 {{ __('Produits') }}
                     </x-nav-link>
+                  
 
                     <x-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')">
                         👥 {{ __('Clients') }}
@@ -31,7 +32,9 @@
                     <x-nav-link :href="route('fournisseurs.index')" :active="request()->routeIs('fournisseurs.*')">
                         🚚 {{ __('Fournisseurs') }}
                     </x-nav-link>
-
+                      <x-nav-link :href="route('fichier-client.index')" :active="request()->routeIs('fichier-client.*')">
+                        📂 {{ __('Fichier Clients') }}
+                    </x-nav-link>
                     @if(auth()->user()->isAdmin())
                     <x-nav-link :href="route('rapports.ventes')" :active="request()->routeIs('rapports.*')">
                         📊 {{ __('Rapports') }}

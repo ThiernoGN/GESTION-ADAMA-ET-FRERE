@@ -22,7 +22,6 @@ return new class extends Migration
         Schema::create('produits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('categorie_id')->constrained('categories')->cascadeOnDelete();
-            $table->foreignId('marque_id')->constrained('marques')->cascadeOnDelete();
             $table->string('nom');
             $table->string('reference')->unique();
             $table->text('description')->nullable();
@@ -115,7 +114,6 @@ return new class extends Migration
         Schema::dropIfExists('fournisseurs');
         Schema::dropIfExists('clients');
         Schema::dropIfExists('produits');
-        Schema::dropIfExists('marques');
         Schema::dropIfExists('categories');
     }
 };

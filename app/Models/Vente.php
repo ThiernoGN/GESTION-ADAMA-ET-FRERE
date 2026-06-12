@@ -9,24 +9,25 @@ class Vente extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'numero',
-        'client_id',
-        'user_id',
-        'total_ht',
-        'remise',
-         'montant_paye',   // ← ajouter
-        'reste_a_payer',  // ← ajouter
-        'total_ttc',
-        'mode_paiement',
-        'statut',
-    ];
+protected $fillable = [
+    'numero', 'client_id', 'user_id',
+    'total_ht', 'remise', 'total_ttc',
+    'montant_paye', 'montant_paye_2',
+    'date_paiement_1', 'date_paiement_2',
+    'reste_a_payer',
+    'mode_paiement', 'statut',
+];
 
-    protected $casts = [
-        'total_ht'  => 'decimal:2',
-        'remise'    => 'decimal:2',
-        'total_ttc' => 'decimal:2',
-    ];
+protected $casts = [
+    'total_ht'         => 'decimal:2',
+    'remise'           => 'decimal:2',
+    'total_ttc'        => 'decimal:2',
+    'montant_paye'     => 'decimal:2',
+    'montant_paye_2'   => 'decimal:2',
+    'reste_a_payer'    => 'decimal:2',
+    'date_paiement_1'  => 'datetime',
+    'date_paiement_2'  => 'datetime',
+];
 
     // ─── Relations ───────────────────────────────────────────
 
