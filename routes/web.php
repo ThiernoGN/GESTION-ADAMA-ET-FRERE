@@ -33,6 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Clients
     Route::resource('clients', ClientController::class);
 
+    Route::post('ventes/{vente}/solde', [VenteController::class, 'solde'])->name('ventes.solde');
+
     // Ventes
     Route::resource('ventes', VenteController::class);
     Route::get('ventes/{vente}/facture',   [VenteController::class, 'facture'])->name('ventes.facture');

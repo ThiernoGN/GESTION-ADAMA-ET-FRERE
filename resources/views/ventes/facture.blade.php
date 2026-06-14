@@ -288,7 +288,7 @@
         <td style="text-align:right; font-weight:700; font-size:13px;
             color: {{ $reste > 0 ? '#dc2626' : '#16a34a' }};
             background: {{ $reste > 0 ? '#fee2e2' : '#dcfce7' }};">
-            {{ $reste > 0 ? number_format($reste, 0, ',', ' ') . ' GNF' : '✅ SOLDÉ' }}
+            {{ $reste > 0 ? number_format($reste, 0, ',', ' ') . ' GNF' : ' SOLDÉ' }}
         </td>
     </tr>
 
